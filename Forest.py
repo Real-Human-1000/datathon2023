@@ -35,12 +35,6 @@ all_metrics = pd.concat(metrics_frames)
 
 msn2019, metrics2019 = get_tables_for_year(2019)
 
-grid = {"n_estimators": [10, 50, 100, 200, 500, 1000],
-        "max_depth": [None, 5, 10, 20, 30],
-        "max_features": ["auto","sqrt"],
-        "min_samples_split": [2,4,6],
-        "min_samples_leaf": [1,2,4]}
-
 np.random.seed(42)
 
 X_train = all_MSN
@@ -49,14 +43,10 @@ y_train = all_metrics
 X_test = msn2019
 y_test = metrics2019
 
-rfr = RandomForestRegressor(n_jobs=1)
+rfr = RandomForestRegressor(n_estimators=100)
 
-rs_rfr = RandomizedSearchCV(estimator=rfr,
-                            param_distributions=grid,
-                            n_iter=50,
-                            cv = 5,
-                            verbose=2)
-rs_rfr.fit(X_train,y_train)
+
+rfr.fit(X_train,y_train)
 
 
 
@@ -97,6 +87,6 @@ def prediction_error(predictions, actual_result):
     return mse
 
 
-preds = rs_rfr.predict(X_test)
+preds = rfr.predict(X_test)
 vals = prediction_error(preds,y_test)
 print(vals)
