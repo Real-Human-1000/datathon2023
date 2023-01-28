@@ -8,8 +8,8 @@ from time import sleep
 
 from sklearn.pipeline import make_pipeline
 from sklearn.preprocessing import StandardScaler
-from sklearn.linear_model import (LinearRegression, Lasso, RidgeCV)
-from sklearn.metrics import mean_squared_error
+from sklearn.linear_model import (LinearRegression, LassoCV, RidgeCV, ElasticNetCV)
+from sklearn.metrics import mean_squared_error, r2_score
 
 # Referenced https://towardsdatascience.com/build-better-regression-models-with-lasso-271ce0f22bd
 
@@ -44,6 +44,7 @@ Metrics_df = states_df2[['StateCode', 'CO2 Emissions (Mmt)', 'TotalNumberofInves
 Metrics_df = Metrics_df.drop_duplicates(subset=None, keep="first", inplace=False)
 Metrics_df.set_index('StateCode', inplace=True)
 """
+
 
 def reorganize_msn_metrics(msn, metrics):
     data = msn.assign(CO2Emissions=metrics[['CO2 Emissions (Mmt)']])
@@ -80,15 +81,19 @@ print("{:e}".format(mse))
 # print(list(linear_regression_coef))
 
 
-lasso_model = make_pipeline(StandardScaler(), Lasso(tol=0.01, max_iter=100000))
+lasso_model = make_pipeline(StandardScaler(), LassoCV())
 lasso_model.fit(msn2015, out2015)
 ridge_model = make_pipeline(StandardScaler(), RidgeCV())
 ridge_model.fit(msn2015, out2015)
+elasticnet_model = make_pipeline(StandardScaler(), ElasticNetCV())
+elasticnet_model.fit(msn2015, out2015)
 # lasso_model_coef = lasso_model[-1].coef_
 # print(list(lasso_model_coef))
 
 print(ridge_model.predict(msn2016))
 mse = mean_squared_error(out2016, lasso_model.predict(msn2016))
 mse2 = mean_squared_error(out2016, ridge_model.predict(msn2016))
+mse3 = mean_squared_error(out2016, elasticnet_model.predict(msn2016))
 print("{:e}".format(mse))
 print("{:e}".format(mse2))
+print("{:e}".format(mse3))
