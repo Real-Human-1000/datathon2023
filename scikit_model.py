@@ -43,7 +43,7 @@ def plot_correlation(df):
 
 MSN_frames = []
 metrics_frames = []
-for year in range(2015, 2019):
+for year in range(2015, 2020):
     MSN_frames.append(get_tables_for_year(year)[0])
     metrics_frames.append(get_tables_for_year(year)[1])
 #creates MSN matrix for years from 2015-2018
@@ -54,7 +54,7 @@ all_metrics = pd.concat(metrics_frames)
 
 msn2015, metrics2015 = get_tables_for_year(2015)
 data2015, out2015 = get_tables_for_year(2015)
-msn2016, metrics2016 = get_tables_for_year(2016)
+msn2016, metrics2016 = get_tables_for_year(2019)
 data2016, out2016 = get_tables_for_year(2016)
 
 msn2019, out2019 = get_tables_for_year(2015)
