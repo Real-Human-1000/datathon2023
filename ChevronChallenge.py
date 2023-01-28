@@ -14,7 +14,7 @@ def get_tables_for_year(year):
     states_df2 = states_df[states_df['Year'] == year]
 
     MSN_df = states_df2.pivot(index="StateCode", columns=("MSN"), values="Amount")
-    MSN_df.drop('WDEXB', axis=1, inplace=True)
+    MSN_df.drop(['WDEXB','BDPRP','BFPRP','CLPRP','COPRK','ENPRP','NGMPK','NGMPP','PAPRP'], axis=1, inplace=True)
     Metrics_df = states_df2[['StateCode', 'CO2 Emissions (Mmt)', 'TotalNumberofInvestments', 'TotalAmountofAssistance']]
     Metrics_df = Metrics_df.drop_duplicates(subset=None, keep="first", inplace=False)
     Metrics_df.set_index('StateCode', inplace=True)
