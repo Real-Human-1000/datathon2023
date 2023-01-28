@@ -33,11 +33,8 @@ def get_tables_for_year(year):
 
 def plot_correlation(df):
     plt.figure(figsize=(16,10))
-
     sns.heatmap(df.corr(), vmin=-1, vmax=1, center=0, annot=True, cmap="vlag", annot_kws={"size":6})
-
     plt.title("Correlation", fontsize=20)
-
     plt.show()
 
 
@@ -60,6 +57,7 @@ data2016, out2016 = get_tables_for_year(2016)
 msn2019, out2019 = get_tables_for_year(2015)
 # plot_correlation(data2015)
 
+# Create and fit standard (single-year) models
 linear_regression = make_pipeline(StandardScaler(), LinearRegression())
 linear_regression.fit(msn2015, out2015)
 lasso_model = make_pipeline(StandardScaler(), LassoCV())
@@ -69,7 +67,7 @@ ridge_model.fit(msn2015, out2015)
 elasticnet_model = make_pipeline(StandardScaler(), ElasticNetCV())
 elasticnet_model.fit(msn2015, out2015)
 
-
+# Create and fit multi-year models
 linear_regression_all = make_pipeline(StandardScaler(), LinearRegression())
 linear_regression_all.fit(all_MSN, all_metrics)
 lasso_all_model = make_pipeline(StandardScaler(), LassoCV())
@@ -79,16 +77,7 @@ ridge_all_model.fit(all_MSN, all_metrics)
 elasticnet_all_model = make_pipeline(StandardScaler(), ElasticNetCV())
 elasticnet_all_model.fit(all_MSN, all_metrics)
 
-# Weights
-lasso_model_coef = lasso_all_model[-1].coef_
-print(list(zip(list(msn2015.columns), list(lasso_model_coef))))
-
-elasticnet_all_model_coef = elasticnet_all_model[-1].coef_
-print(list(zip(list(msn2015.columns), list(elasticnet_all_model_coef))))
-
-ridge_all_model_coef = ridge_all_model[-1].coef_
-print(list(zip(list(msn2015.columns), list(ridge_all_model_coef))))
-
+# Get MSE
 mse = mean_squared_error(out2016, linear_regression.predict(msn2016))
 msea = mean_squared_error(out2019, linear_regression_all.predict(msn2019))
 msel = mean_squared_error(out2016, lasso_model.predict(msn2016))
@@ -98,6 +87,7 @@ msera = mean_squared_error(out2019, ridge_all_model.predict(msn2019))
 msee = mean_squared_error(out2016, elasticnet_model.predict(msn2019))
 mseea = mean_squared_error(out2019, elasticnet_all_model.predict(msn2019))
 
+# Print out results
 print("Linear Regression MSE: " + "{:e}".format(mse))
 print("Linear Regression_All MSE: " + "{:e}".format(msea))
 print("LASSO MSE: " + "{:e}".format(msel))
@@ -106,3 +96,26 @@ print("Ridge MSE: " + "{:e}".format(mser))
 print("Ridge_All MSE: " + "{:e}".format(msera))
 print("ElasticNet MSE: " + "{:e}".format(msee))
 print("ElasticNet_All MSE: " + "{:e}".format(mseea))
+
+
+# Graph some weights
+# Weights
+lasso_model_coef = lasso_all_model[-1].coef_
+print(list(zip(msn2015.columns, lasso_model_coef)))
+
+elasticnet_all_model_coef = elasticnet_all_model[-1].coef_
+print(list(zip(msn2015.columns, elasticnet_all_model_coef)))
+
+ridge_all_model_coef = ridge_all_model[-1].coef_
+print(list(zip(msn2015.columns, ridge_all_model_coef)))
+
+
+def weights_graph(model):
+    model_coef = list(model[-1].coef_)
+    print(model_coef)
+    plt.figure(figsize=(16,10))
+    plt.bar(msn2015.columns, model_coef, color='maroon', width=0.4)
+    plt.show()
+
+
+weights_graph(lasso_model)
