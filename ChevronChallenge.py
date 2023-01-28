@@ -9,6 +9,22 @@ df = pd.read_csv("Investment_Data_Train (1).csv")
 new_df = df[['MSN', 'StateCode', 'Year', 'Amount',
        'CO2 Emissions (Mmt)', 'TotalNumberofInvestments',
        'TotalAmountofAssistance']]
+def get_tables_for_year(year):
+    df = pd.read_csv("Investment_Data_Train (1).csv")
+    new_df = df[['MSN', 'StateCode', 'Year', 'Amount',
+                 'CO2 Emissions (Mmt)', 'TotalNumberofInvestments',
+                 'TotalAmountofAssistance']]
+
+    states_df = new_df[~new_df['StateCode'].isin(['DC', 'US', 'X3', 'X5'])]
+    states_df2 = states_df[states_df['Year'] == year]
+
+    MSN_df = states_df2.pivot(index="StateCode", columns=("MSN"), values="Amount")
+    Metrics_df = states_df2[['StateCode', 'CO2 Emissions (Mmt)', 'TotalNumberofInvestments', 'TotalAmountofAssistance']]
+    Metrics_df = Metrics_df.drop_duplicates(subset=None, keep="first", inplace=False)
+    Metrics_df.set_index('StateCode', inplace=True)
+    # Final_df = pd.concat([MSN_df, Metrics_df], axis="columns")
+
+    return MSN_df.to_numpy(), Metrics_df.TotalAmountofAssistance.to_numpy()
 
 states_df = new_df[~new_df['StateCode'].isin(['DC','US','X3','X5'])]
 states_df2 = states_df[states_df['Year'] == 2015]
@@ -21,8 +37,8 @@ Metrics_df.set_index('StateCode', inplace = True)
 Final_df = pd.concat([MSN_df, Metrics_df], axis = "columns")
 #print(Final_df)
 
-MSN_matrix = MSN_df.to_numpy()
-Metrics_matrix = Metrics_df.to_numpy()
+MSN_matrix = get_tables_for_year(2015)
+Metrics_matrix = get_tables_for_year(2016)
 Final_matrix = Final_df.to_numpy()
 
 states_df3 = states_df[states_df['Year'] == 2016]
@@ -36,8 +52,8 @@ Final_df16 = pd.concat([MSN_df16, Metrics_df16], axis = "columns")
 
 #print(Final_df16)
 
-MSN_matrix16 = MSN_df16.to_numpy()
-Metrics_matrix16 = Metrics_df16.to_numpy()
+MSN_matrix16, _ = get_tables_for_year(2015)
+_, Metrics_matrix16 = get_tables_for_year(2016)
 Final_matrix16 = Final_df16.to_numpy()
 
 
