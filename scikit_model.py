@@ -29,8 +29,21 @@ def get_tables_for_year(year):
     Metrics_df = Metrics_df.drop_duplicates(subset=None, keep="first", inplace=False)
     Metrics_df.set_index('StateCode', inplace=True)
 
-    return MSN_df, Metrics_df
+    return MSN_df, Metrics_df.TotalAmountofAssistance
 
+"""
+new_df = df[['MSN', 'StateCode', 'Year', 'Amount',
+             'CO2 Emissions (Mmt)', 'TotalNumberofInvestments',
+             'TotalAmountofAssistance']]
+
+states_df2 = new_df[~new_df['StateCode'].isin(['DC', 'US', 'X3', 'X5'])]
+
+MSN_df = states_df2.pivot(index="StateCode", columns=("MSN"), values="Amount")
+MSN_df.drop(['WDEXB', 'BDPRP', 'BFPRP', 'CLPRP', 'COPRK', 'ENPRP', 'NGMPK', 'NGMPP', 'PAPRP'], axis=1, inplace=True)
+Metrics_df = states_df2[['StateCode', 'CO2 Emissions (Mmt)', 'TotalNumberofInvestments', 'TotalAmountofAssistance']]
+Metrics_df = Metrics_df.drop_duplicates(subset=None, keep="first", inplace=False)
+Metrics_df.set_index('StateCode', inplace=True)
+"""
 
 def reorganize_msn_metrics(msn, metrics):
     data = msn.assign(CO2Emissions=metrics[['CO2 Emissions (Mmt)']])
@@ -50,10 +63,10 @@ def plot_correlation(df):
 
 
 msn2015, metrics2015 = get_tables_for_year(2015)
-data2015, out2015 = reorganize_msn_metrics(msn2015, metrics2015)
+data2015, out2015 = get_tables_for_year(2015)
 
 msn2016, metrics2016 = get_tables_for_year(2016)
-data2016, out2016 = reorganize_msn_metrics(msn2016, metrics2016)
+data2016, out2016 = get_tables_for_year(2016)
 
 # plot_correlation(data2015)
 
@@ -69,11 +82,13 @@ print("{:e}".format(mse))
 
 lasso_model = make_pipeline(StandardScaler(), Lasso(tol=0.01, max_iter=100000))
 lasso_model.fit(msn2015, out2015)
-
+ridge_model = make_pipeline(StandardScaler(), RidgeCV())
+ridge_model.fit(msn2015, out2015)
 # lasso_model_coef = lasso_model[-1].coef_
 # print(list(lasso_model_coef))
 
-# print(lasso_model.predict(msn2015))
-
+print(ridge_model.predict(msn2016))
 mse = mean_squared_error(out2016, lasso_model.predict(msn2016))
+mse2 = mean_squared_error(out2016, ridge_model.predict(msn2016))
 print("{:e}".format(mse))
+print("{:e}".format(mse2))
