@@ -10,5 +10,5 @@ with open(target_csv_path, "wb") as f:
 print("Download ready.")
 
 import pandas as pd
-nba = pd.read_csv("nba_all_elo.csv")
-print(type(nba))
+nba = pd.read_csv("Investment_Data_Train (1).csv")
+print(nba)
