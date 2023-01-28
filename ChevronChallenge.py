@@ -242,6 +242,8 @@ def run_experiment(iterations):
     print("LASSO model | λ of 50000 | testing: ", lassomodel2.prediction_error(MSN_matrix16, Metrics_matrix16))
     print("LASSO model | λ of 100000 | testing: ", lassomodel3.prediction_error(MSN_matrix16, Metrics_matrix16))
 
+    print("LASSO model | λ of 1000 | testing: ", lassomodel.prediction_error(MSN_matrix, Metrics_matrix))
+
     #print(lassomodel2.generate_predictions(stats0112))
 
 run_experiment(50)
