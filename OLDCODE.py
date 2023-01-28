@@ -3,53 +3,40 @@ import numpy as np
 import numpy.matrixlib as mat
 from numpy.linalg import inv
 
-def get_tables_for_year(year):
-    df = pd.read_csv("Investment_Data_Train (1).csv")
-    new_df = df[['MSN', 'StateCode', 'Year', 'Amount',
-                 'CO2 Emissions (Mmt)', 'TotalNumberofInvestments',
-                 'TotalAmountofAssistance']]
+df = pd.read_csv("Investment_Data_Train (1).csv")
+new_df = df[['MSN', 'StateCode', 'Year', 'Amount',
+       'CO2 Emissions (Mmt)', 'TotalNumberofInvestments',
+       'TotalAmountofAssistance']]
 
-    states_df = new_df[~new_df['StateCode'].isin(['DC', 'US', 'X3', 'X5'])]
-    states_df2 = states_df[states_df['Year'] == year]
+states_df = new_df[~new_df['StateCode'].isin(['DC','US','X3','X5'])]
+states_df2 = states_df[states_df['Year'] == 2015]
 
-    MSN_df = states_df2.pivot(index="StateCode", columns=("MSN"), values="Amount")
-    Metrics_df = states_df2[['StateCode', 'CO2 Emissions (Mmt)', 'TotalNumberofInvestments', 'TotalAmountofAssistance']]
-    Metrics_df = Metrics_df.drop_duplicates(subset=None, keep="first", inplace=False)
-    Metrics_df.set_index('StateCode', inplace=True)
-    # Final_df = pd.concat([MSN_df, Metrics_df], axis="columns")
+MSN_df = states_df2.pivot(index = "StateCode", columns = ("MSN"), values = "Amount")
+MSN_df.drop('WDEXB', axis=1, inplace=True)
+Metrics_df = states_df2[['StateCode', 'CO2 Emissions (Mmt)', 'TotalNumberofInvestments', 'TotalAmountofAssistance']]
+Metrics_df = Metrics_df.drop_duplicates(subset=None, keep="first" , inplace=False)
+Metrics_df.set_index('StateCode', inplace = True)
+Final_df = pd.concat([MSN_df, Metrics_df], axis = "columns")
+#print(Final_df)
 
-    return MSN_df.to_numpy(), Metrics_df.TotalAmountofAssistance.to_numpy()
+MSN_matrix = MSN_df.to_numpy()
+Metrics_matrix = Metrics_df.to_numpy()
+Final_matrix = Final_df.to_numpy()
 
+states_df3 = states_df[states_df['Year'] == 2016]
 
+MSN_df16 = states_df3.pivot(index = "StateCode", columns = ("MSN"), values = "Amount")
+MSN_df16.drop('WDEXB', axis=1, inplace=True)
+Metrics_df16 = states_df3[['StateCode', 'CO2 Emissions (Mmt)', 'TotalNumberofInvestments', 'TotalAmountofAssistance']]
+Metrics_df16 = Metrics_df16.drop_duplicates(subset=None, keep="first" , inplace=False)
+Metrics_df16.set_index('StateCode', inplace = True)
+Final_df16 = pd.concat([MSN_df16, Metrics_df16], axis = "columns")
 
-MSN_matrix = get_tables_for_year(2015)
-Metrics_matrix = get_tables_for_year(2016)
+#print(Final_df16)
 
-MSN_matrix16, _ = get_tables_for_year(2015)
-_, Metrics_matrix16 = get_tables_for_year(2016)
-
-
-def fit_least_squares(input_data, output_data):
-    """
-    Create a Linear Model which predicts the output vector
-    given the input matrix with minimal Mean-Squared Error.
-
-    inputs:
-        - input_data: an n x m matrix
-        - output_data: an n x 1 matrix
-
-    returns: a LinearModel object which has been fit to approximately
-    match the data
-    """
-
-    # solve for the weights
-    input_transpose = np.transpose(input_data)
-    input_mul = input_transpose @ input_data
-    deter = np.linalg.det(input_mul)
-    input_inverse = np.linalg.inv(input_mul)
-    weights = (input_inverse @ input_transpose) @ output_data
-
-    return LinearModel(weights)
+MSN_matrix16 = MSN_df16.to_numpy()
+Metrics_matrix16 = Metrics_df16.to_numpy()
+Final_matrix16 = Final_df16.to_numpy()
 
 class LinearModel:
     """
@@ -108,6 +95,49 @@ class LinearModel:
         Returns: a float that is the MSE between the generated
         data and the actual data
         """
+
+        # generate the predictions
+        prediction_matrix = self.generate_predictions(inputs)
+        vals = np.shape(prediction_matrix)
+        rows = vals[0]
+
+        # initialize the mse
+        mse_total = 0
+
+        # add the squared error for each data to the mse
+        for curr_row in range(rows):
+            pred_val = prediction_matrix[curr_row, 0]
+            actual_val = actual_result[curr_row, 0]
+            error = actual_val - pred_val
+            squared_error = error ** 2
+            mse_total += squared_error
+
+        # compute the mse
+        mse = mse_total / rows
+
+        return mse
+def fit_least_squares(input_data, output_data):
+    """
+    Create a Linear Model which predicts the output vector
+    given the input matrix with minimal Mean-Squared Error.
+
+    inputs:
+        - input_data: an n x m matrix
+        - output_data: an n x 1 matrix
+
+    returns: a LinearModel object which has been fit to approximately
+    match the data
+    """
+
+    # solve for the weights
+    input_transpose = np.transpose(input_data)
+    input_mul = input_transpose @ input_data
+    deter = np.linalg.det(input_mul)
+    input_inverse = np.linalg.inv(input_mul)
+    weights = (input_inverse @ input_transpose) @ output_data
+
+    return LinearModel(weights)
+
 
 def soft_threshold(x_val, t_val):
     '''
