@@ -73,8 +73,6 @@ ridge_model.fit(msn2015, out2015)
 elasticnet_model = make_pipeline(StandardScaler(), ElasticNetCV())
 elasticnet_model.fit(msn2015, out2015)
 
-# lasso_model_coef = lasso_model[-1].coef_
-# print(list(lasso_model_coef))
 
 linear_regression_all = make_pipeline(StandardScaler(), LinearRegression())
 linear_regression_all.fit(all_MSN, all_metrics)
@@ -83,6 +81,9 @@ lasso_all_model.fit(all_MSN, all_metrics)
 ridge_all_model = make_pipeline(StandardScaler(), RidgeCV())
 ridge_all_model.fit(all_MSN, all_metrics)
 
+
+lasso_model_coef = lasso_all_model[-1].coef_
+print(list(lasso_model_coef))
 
 mse = mean_squared_error(out2016, linear_regression.predict(msn2016))
 msea = mean_squared_error(out2019, linear_regression_all.predict(msn2019))
