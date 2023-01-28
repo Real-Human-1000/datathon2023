@@ -24,6 +24,7 @@ def get_tables_for_year(year):
     states_df2 = states_df[states_df['Year'] == year]
 
     MSN_df = states_df2.pivot(index="StateCode", columns=("MSN"), values="Amount")
+    MSN_df.drop(['WDEXB', 'BDPRP', 'BFPRP', 'CLPRP', 'COPRK', 'ENPRP', 'NGMPK', 'NGMPP', 'PAPRP'], axis=1, inplace=True)
     Metrics_df = states_df2[['StateCode', 'CO2 Emissions (Mmt)', 'TotalNumberofInvestments', 'TotalAmountofAssistance']]
     Metrics_df = Metrics_df.drop_duplicates(subset=None, keep="first", inplace=False)
     Metrics_df.set_index('StateCode', inplace=True)
@@ -60,9 +61,9 @@ data2016, out2016 = reorganize_msn_metrics(msn2016, metrics2016)
 # plot_correlation(data2015)
 
 linear_regression = make_pipeline(StandardScaler(), LinearRegression())
-linear_regression.fit(data2015, out2015)
+linear_regression.fit(msn2015, out2015)
 
-mse = mean_squared_error(out2015, linear_regression.predict(data2015))
+mse = mean_squared_error(out2015, linear_regression.predict(msn2016))
 print("{:e}".format(mse))
 
 # linear_regression_coef = linear_regression[-1].coef_
@@ -70,11 +71,10 @@ print("{:e}".format(mse))
 # print(list(linear_regression_coef))
 
 
-lasso_model = make_pipeline(StandardScaler(), Lasso(tol=0.1, max_iter=100000))
-lasso_model.fit(data2015, out2015)
+lasso_model = make_pipeline(StandardScaler(), Lasso(tol=0.01, max_iter=100000))
+lasso_model.fit(msn2015, out2015)
 
-print(lasso_model.predict(data2015))
+print(lasso_model.predict(msn2015))
 
-mse = mean_squared_error(out2015, lasso_model.predict(data2015))
+mse = mean_squared_error(out2015, lasso_model.predict(msn2016))
 print("{:e}".format(mse))
-
