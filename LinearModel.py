@@ -69,8 +69,8 @@ class LinearModel:
 
         # add the squared error for each data to the mse
         for curr_row in range(rows):
-            pred_val = prediction_matrix[curr_row, 0]
-            actual_val = actual_result[curr_row, 0]
+            pred_val = prediction_matrix[curr_row]
+            actual_val = actual_result[curr_row]
             error = actual_val - pred_val
             squared_error = error ** 2
             mse_total += squared_error
