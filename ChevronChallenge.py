@@ -25,10 +25,6 @@ def get_tables_for_year(year):
     return MSN_df.to_numpy(), Metrics_df.TotalAmountofAssistance.to_numpy()
 
 
-MSN_matrix, Metrics_matrix = get_tables_for_year(2015)
-MSN_matrix16, Metrics_matrix16 = get_tables_for_year(2016)
-
-
 def fit_least_squares(input_data, output_data):
     """
     Create a Linear Model which predicts the output vector
