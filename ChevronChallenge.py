@@ -15,6 +15,7 @@ def get_tables_for_year(year):
 
     MSN_df = states_df2.pivot(index="StateCode", columns=("MSN"), values="Amount")
     MSN_df.drop(['WDEXB','BDPRP','BFPRP','CLPRP','COPRK','ENPRP','NGMPK','NGMPP','PAPRP'], axis=1, inplace=True)
+    MSN_df = MSN_df * 1000000000
     Metrics_df = states_df2[['StateCode', 'CO2 Emissions (Mmt)', 'TotalNumberofInvestments', 'TotalAmountofAssistance']]
     Metrics_df = Metrics_df.drop_duplicates(subset=None, keep="first", inplace=False)
     Metrics_df.set_index('StateCode', inplace=True)
@@ -24,13 +25,11 @@ def get_tables_for_year(year):
 
 
 
-MSN_matrix, _ = get_tables_for_year(2015)
-_, Metrics_matrix = get_tables_for_year(2016)
+MSN_matrix, Metrics_matrix = get_tables_for_year(2015)
 
-MSN_matrix16, _ = get_tables_for_year(2015)
-_, Metrics_matrix16 = get_tables_for_year(2016)
+MSN_matrix16, Metrics_matrix16 = get_tables_for_year(2016)
 
-print(np.shape(Metrics_matrix16))
+print(MSN_matrix)
 def fit_least_squares(input_data, output_data):
     """
     Create a Linear Model which predicts the output vector
