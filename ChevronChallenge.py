@@ -12,6 +12,7 @@ states_df = new_df[~new_df['StateCode'].isin(['DC','US','X3','X5'])]
 states_df2 = states_df[states_df['Year'] == 2015]
 
 MSN_df = states_df2.pivot(index = "StateCode", columns = ("MSN"), values = "Amount")
+MSN_df.drop('WDEXB', axis=1, inplace=True)
 Metrics_df = states_df2[['StateCode', 'CO2 Emissions (Mmt)', 'TotalNumberofInvestments', 'TotalAmountofAssistance']]
 Metrics_df = Metrics_df.drop_duplicates(subset=None, keep="first" , inplace=False)
 Metrics_df.set_index('StateCode', inplace = True)
@@ -25,6 +26,7 @@ Final_matrix = Final_df.to_numpy()
 states_df3 = states_df[states_df['Year'] == 2016]
 
 MSN_df16 = states_df3.pivot(index = "StateCode", columns = ("MSN"), values = "Amount")
+MSN_df16.drop('WDEXB', axis=1, inplace=True)
 Metrics_df16 = states_df3[['StateCode', 'CO2 Emissions (Mmt)', 'TotalNumberofInvestments', 'TotalAmountofAssistance']]
 Metrics_df16 = Metrics_df16.drop_duplicates(subset=None, keep="first" , inplace=False)
 Metrics_df16.set_index('StateCode', inplace = True)
@@ -76,7 +78,7 @@ class LinearModel:
         Returns: an n x 1 matrix of predictions
         """
         weights = self.get_weights()
-        matrix = np.multiply(inputs, weights)
+        matrix = inputs @ weights
         return matrix
 
     def prediction_error(self, inputs, actual_result):
@@ -131,9 +133,8 @@ def fit_least_squares(input_data, output_data):
     input_transpose = np.transpose(input_data)
     input_mul = input_transpose @ input_data
     deter = np.linalg.det(input_mul)
-    print(deter)
-    input_inverse = np.linalg.lstsq(input_mul)
-    weights = np.multiply(np.multiply(input_inverse, input_transpose) @ output_data)
+    input_inverse = np.linalg.inv(input_mul)
+    weights = (input_inverse @ input_transpose) @ output_data
 
     return LinearModel(weights)
 
@@ -178,8 +179,8 @@ def fit_lasso(param, iterations, input_data, output_data):
     lse_fit = fit_least_squares(input_data, output_data)
     lse = lse_fit.get_weights()
 
-    matrix1 = np.multiply(np.transpose(input_data), output_data)
-    matrix2 = np.multiply(np.transpose(input_data), input_data)
+    matrix1 = np.transpose(input_data) @ output_data
+    matrix2 = np.transpose(input_data) @ input_data
 
     curr_iter = 0
 
@@ -189,7 +190,7 @@ def fit_lasso(param, iterations, input_data, output_data):
         lse_old = np.copy(lse)
 
         for curr_col in range(cols):
-            matrix3 = np.multiply(matrix2[curr_col,:] @ lse)
+            matrix3 = matrix2[curr_col,:] @ lse
             a_j = (matrix1[curr_col, 0] - matrix3[0, 0]) / matrix2[curr_col, curr_col]
             b_j = param / (2.0 * matrix2[curr_col, curr_col])
             lse[curr_col, 0] = soft_threshold(lse[curr_col, 0] + a_j, b_j)
