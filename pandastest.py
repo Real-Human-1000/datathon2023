@@ -19,7 +19,12 @@ new_df = df[['MSN', 'StateCode', 'Year', 'Amount',
        'TotalAmountofAssistance']]
 
 states_df = new_df[~new_df['StateCode'].isin(['DC','US','X3','X5'])]
-print(states_df)
 states_df2 = states_df[states_df['Year'] == 2015]
-print(states_df2)
+
+MSN_df = states_df2.pivot(index = "StateCode", columns = ("MSN"), values = "Amount")
+Metrics_df = states_df2[['StateCode', 'CO2 Emissions (Mmt)', 'TotalNumberofInvestments', 'TotalAmountofAssistance']]
+Metrics_df = Metrics_df.drop_duplicates(subset=None, keep="first" , inplace=False)
+Metrics_df.set_index('StateCode', inplace = True)
+final_states = pd.concat([MSN_df, Metrics_df], axis = "columns")
+print(final_states)
 #TEST1
