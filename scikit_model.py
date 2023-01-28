@@ -1,10 +1,6 @@
 import pandas as pd
-import numpy as np
 import matplotlib.pyplot as plt
 import seaborn as sns
-import sys
-
-from time import sleep
 
 from sklearn.pipeline import make_pipeline
 from sklearn.preprocessing import StandardScaler
@@ -24,7 +20,7 @@ def get_tables_for_year(year):
     states_df2 = states_df[states_df['Year'] == year]
 
     MSN_df = states_df2.pivot(index="StateCode", columns=("MSN"), values="Amount")
-    MSN_df.drop(['WDEXB', 'BDPRP', 'BFPRP', 'CLPRP', 'COPRK', 'ENPRP', 'NGMPK', 'NGMPP', 'PAPRP'], axis=1, inplace=True)
+    MSN_df.drop(['WDEXB', 'BDPRP', 'BFPRP', 'CLPRK', 'CLPRP', 'COPRK', 'ENPRP', 'NGMPK', 'NGMPP', 'PAPRP'], axis=1, inplace=True)
     Metrics_df = states_df2[['StateCode', 'CO2 Emissions (Mmt)', 'TotalNumberofInvestments', 'TotalAmountofAssistance']]
     Metrics_df = Metrics_df.drop_duplicates(subset=None, keep="first", inplace=False)
     Metrics_df.set_index('StateCode', inplace=True)
@@ -80,10 +76,18 @@ lasso_all_model = make_pipeline(StandardScaler(), LassoCV())
 lasso_all_model.fit(all_MSN, all_metrics)
 ridge_all_model = make_pipeline(StandardScaler(), RidgeCV())
 ridge_all_model.fit(all_MSN, all_metrics)
+elasticnet_all_model = make_pipeline(StandardScaler(), ElasticNetCV())
+elasticnet_all_model.fit(all_MSN, all_metrics)
 
 
 lasso_model_coef = lasso_all_model[-1].coef_
-print(list(lasso_model_coef))
+print(list(zip(list(msn2015.columns), list(lasso_model_coef))))
+
+elasticnet_all_model_coef = elasticnet_all_model[-1].coef_
+print(list(zip(list(msn2015.columns), list(elasticnet_all_model_coef))))
+
+ridge_all_model_coef = ridge_all_model[-1].coef_
+print(list(zip(list(msn2015.columns), list(ridge_all_model_coef))))
 
 mse = mean_squared_error(out2016, linear_regression.predict(msn2016))
 msea = mean_squared_error(out2019, linear_regression_all.predict(msn2019))
@@ -92,6 +96,7 @@ msela = mean_squared_error(out2019, lasso_all_model.predict(msn2019))
 mser = mean_squared_error(out2016, ridge_model.predict(msn2016))
 msera = mean_squared_error(out2019, ridge_all_model.predict(msn2019))
 msee = mean_squared_error(out2016, elasticnet_model.predict(msn2019))
+mseea = mean_squared_error(out2019, elasticnet_all_model.predict(msn2019))
 
 print("Linear Regression MSE: " + "{:e}".format(mse))
 print("Linear Regression_All MSE: " + "{:e}".format(msea))
@@ -100,3 +105,4 @@ print("LASSO_All MSE: " + "{:e}".format(msela))
 print("Ridge MSE: " + "{:e}".format(mser))
 print("Ridge_All MSE: " + "{:e}".format(msera))
 print("ElasticNet MSE: " + "{:e}".format(msee))
+print("ElasticNet_All MSE: " + "{:e}".format(mseea))
