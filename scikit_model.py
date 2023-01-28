@@ -1,6 +1,7 @@
 import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
+import numpy as np
 
 from sklearn.pipeline import make_pipeline
 from sklearn.preprocessing import StandardScaler
@@ -25,8 +26,8 @@ def get_tables_for_year(year):
     Metrics_df = Metrics_df.drop_duplicates(subset=None, keep="first", inplace=False)
     Metrics_df.set_index('StateCode', inplace=True)
 
-    # MSN_df = MSN_df.assign(CO2Emissions=Metrics_df[['CO2 Emissions (Mmt)']])
-    # MSN_df = MSN_df.assign(CO2Emissions=Metrics_df[['TotalNumberofInvestments']])
+    MSN_df = MSN_df.assign(CO2Emissions=Metrics_df[['CO2 Emissions (Mmt)']])
+    MSN_df = MSN_df.assign(CO2Emissions=Metrics_df[['TotalNumberofInvestments']])
 
     return MSN_df, Metrics_df.TotalAmountofAssistance
 
@@ -78,6 +79,9 @@ elasticnet_all_model = make_pipeline(StandardScaler(), ElasticNetCV())
 elasticnet_all_model.fit(all_MSN, all_metrics)
 
 # Get MSE
+
+mse0 = mean_squared_error(out2016, np.zeros((out2016.size, 1)))
+
 mse = mean_squared_error(out2016, linear_regression.predict(msn2016))
 msea = mean_squared_error(out2019, linear_regression_all.predict(msn2019))
 msel = mean_squared_error(out2016, lasso_model.predict(msn2016))
@@ -88,6 +92,7 @@ msee = mean_squared_error(out2016, elasticnet_model.predict(msn2019))
 mseea = mean_squared_error(out2019, elasticnet_all_model.predict(msn2019))
 
 # Print out results
+print("All Zeros: " + "{:e}".format(mse0))
 print("Linear Regression MSE: " + "{:e}".format(mse))
 print("Linear Regression_All MSE: " + "{:e}".format(msea))
 print("LASSO MSE: " + "{:e}".format(msel))
@@ -100,7 +105,7 @@ print("ElasticNet_All MSE: " + "{:e}".format(mseea))
 
 # Graph some weights
 # Weights
-lasso_model_coef = lasso_all_model[-1].coef_
+lasso_model_coef = lasso_model[-1].coef_
 print(list(zip(msn2015.columns, lasso_model_coef)))
 
 elasticnet_all_model_coef = elasticnet_all_model[-1].coef_
@@ -111,11 +116,16 @@ print(list(zip(msn2015.columns, ridge_all_model_coef)))
 
 
 def weights_graph(model):
-    model_coef = list(model[-1].coef_)
+    model_coef = model[-1].coef_
     print(model_coef)
     plt.figure(figsize=(16,10))
     plt.bar(msn2015.columns, model_coef, color='maroon', width=0.4)
+    plt.yscale("linear")
     plt.show()
 
 
-weights_graph(lasso_model)
+# weights_graph(ridge_all_model)
+# weights_graph(lasso_all_model)
+
+# Ridge and Lasso are similar
+# Lin Reg is different but worse
