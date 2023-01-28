@@ -8,7 +8,7 @@ from time import sleep
 
 from sklearn.pipeline import make_pipeline
 from sklearn.preprocessing import StandardScaler
-from sklearn.linear_model import (LinearRegression, Lasso, RidgeCV)
+from sklearn.linear_model import (LinearRegression, LassoCV, RidgeCV, ElasticNetCV)
 from sklearn.metrics import mean_squared_error
 
 # Referenced https://towardsdatascience.com/build-better-regression-models-with-lasso-271ce0f22bd
@@ -29,14 +29,10 @@ def get_tables_for_year(year):
     Metrics_df = Metrics_df.drop_duplicates(subset=None, keep="first", inplace=False)
     Metrics_df.set_index('StateCode', inplace=True)
 
+    # MSN_df = MSN_df.assign(CO2Emissions=Metrics_df[['CO2 Emissions (Mmt)']])
+    # MSN_df = MSN_df.assign(CO2Emissions=Metrics_df[['TotalNumberofInvestments']])
+
     return MSN_df, Metrics_df.TotalAmountofAssistance
-
-
-def reorganize_msn_metrics(msn, metrics):
-    data = msn.assign(CO2Emissions=metrics[['CO2 Emissions (Mmt)']])
-    data = data.assign(TotalInvestments=metrics[['TotalNumberofInvestments']])
-    output = metrics[['TotalAmountofAssistance']]
-    return data, output
 
 
 def plot_correlation(df):
@@ -70,31 +66,36 @@ msn2019, out2019 = get_tables_for_year(2015)
 
 linear_regression = make_pipeline(StandardScaler(), LinearRegression())
 linear_regression.fit(msn2015, out2015)
-
-mse = mean_squared_error(out2016, linear_regression.predict(msn2016))
-print("{:e}".format(mse))
-
-# linear_regression_coef = linear_regression[-1].coef_
-# print(list(linear_regression_coef))
-
-
-lasso_model = make_pipeline(StandardScaler(), Lasso(tol=0.01, max_iter=100000))
+lasso_model = make_pipeline(StandardScaler(), LassoCV())
 lasso_model.fit(msn2015, out2015)
 ridge_model = make_pipeline(StandardScaler(), RidgeCV())
 ridge_model.fit(msn2015, out2015)
+elasticnet_model = make_pipeline(StandardScaler(), ElasticNetCV())
+elasticnet_model.fit(msn2015, out2015)
+
 # lasso_model_coef = lasso_model[-1].coef_
 # print(list(lasso_model_coef))
-lasso_model2 = make_pipeline(StandardScaler(), Lasso(tol=0.01, max_iter=100000))
-lasso_model2.fit(all_MSN, all_metrics)
-ridge_model2 = make_pipeline(StandardScaler(), RidgeCV())
-ridge_model2.fit(all_MSN, all_metrics)
-#print(ridge_model.predict(msn2016))
-print(ridge_model2.predict(msn2019))
 
-mse = mean_squared_error(out2016, lasso_model.predict(msn2016))
-mse2 = mean_squared_error(out2016, ridge_model.predict(msn2016))
-mse3 = mean_squared_error(out2019, ridge_model2.predict(msn2019))
-mse3 = mean_squared_error(out2016, ridge_model2.predict(msn2016))
-print("{:e}".format(mse))
-print("{:e}".format(mse2))
-print("{:e}".format(mse3))
+linear_regression_all = make_pipeline(StandardScaler(), LinearRegression())
+linear_regression_all.fit(all_MSN, all_metrics)
+lasso_all_model = make_pipeline(StandardScaler(), LassoCV())
+lasso_all_model.fit(all_MSN, all_metrics)
+ridge_all_model = make_pipeline(StandardScaler(), RidgeCV())
+ridge_all_model.fit(all_MSN, all_metrics)
+
+
+mse = mean_squared_error(out2016, linear_regression.predict(msn2016))
+msea = mean_squared_error(out2019, linear_regression_all.predict(msn2019))
+msel = mean_squared_error(out2016, lasso_model.predict(msn2016))
+msela = mean_squared_error(out2019, lasso_all_model.predict(msn2019))
+mser = mean_squared_error(out2016, ridge_model.predict(msn2016))
+msera = mean_squared_error(out2019, ridge_all_model.predict(msn2019))
+msee = mean_squared_error(out2016, elasticnet_model.predict(msn2019))
+
+print("Linear Regression MSE: " + "{:e}".format(mse))
+print("Linear Regression_All MSE: " + "{:e}".format(msea))
+print("LASSO MSE: " + "{:e}".format(msel))
+print("LASSO_All MSE: " + "{:e}".format(msela))
+print("Ridge MSE: " + "{:e}".format(mser))
+print("Ridge_All MSE: " + "{:e}".format(msera))
+print("ElasticNet MSE: " + "{:e}".format(msee))

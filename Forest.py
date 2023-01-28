@@ -3,6 +3,7 @@ import numpy as np
 import math
 from sklearn.ensemble import RandomForestRegressor
 
+
 def get_tables_for_year(year):
     df = pd.read_csv("Investment_Data_Train (1).csv")
     new_df = df[['MSN', 'StateCode', 'Year', 'Amount',
@@ -86,6 +87,7 @@ def prediction_error(predictions, actual_result):
 
     return mse
 
+
 preds = rfr.predict(X_test)
 vals = math.sqrt(prediction_error(preds,y_test))
-print(vals)
+print("{:e}".format(vals**2))
