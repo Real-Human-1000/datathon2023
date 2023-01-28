@@ -2,6 +2,7 @@ import pandas as pd
 import numpy as np
 import math
 from sklearn.ensemble import RandomForestRegressor
+from sklearn.model_selection import RandomizedSearchCV
 
 
 def get_tables_for_year(year):
@@ -20,35 +21,43 @@ def get_tables_for_year(year):
     Metrics_df.set_index('StateCode', inplace=True)
 
     return MSN_df, Metrics_df.TotalAmountofAssistance
+
 MSN_frames = []
 metrics_frames = []
+
 for year in range(2015, 2019):
     MSN_frames.append(get_tables_for_year(year)[0])
     metrics_frames.append(get_tables_for_year(year)[1])
+
 #creates MSN matrix for years from 2015-2018
-MSN_matrix, Metrics_matrix = get_tables_for_year(2015)
-MSN_matrix16, Metrics_matrix16 = get_tables_for_year(2016)
 all_MSN = pd.concat(MSN_frames)
 all_metrics = pd.concat(metrics_frames)
 
+msn2019, metrics2019 = get_tables_for_year(2019)
 
-msn2015, metrics2015 = get_tables_for_year(2015)
-msn2016, metrics2016 = get_tables_for_year(2016)
+grid = {"n_estimators": [10, 50, 100, 200, 500, 1000],
+        "max_depth": [None, 5, 10, 20, 30],
+        "max_features": ["auto","sqrt"],
+        "min_samples_split": [2,4,6],
+        "min_samples_leaf": [1,2,4]}
 
 np.random.seed(42)
 
-X_train = msn2015
-y_train = metrics2015
+X_train = all_MSN
+y_train = all_metrics
 
-X_test = msn2016
-y_test = metrics2016
+X_test = msn2019
+y_test = metrics2019
 
-rfr = RandomForestRegressor(n_estimators=100)
-rfr.fit(X_train,y_train)
+rfr = RandomForestRegressor(n_jobs=1)
 
-print(rfr.score(X_test, y_test))
+rs_rfr = RandomizedSearchCV(estimator=rfr,
+                            param_distributions=grid,
+                            n_iter=50,
+                            cv = 5,
+                            verbose=2)
+rs_rfr.fit(X_train,y_train)
 
-print(rfr.predict(X_test))
 
 
 def prediction_error(predictions, actual_result):
@@ -88,6 +97,6 @@ def prediction_error(predictions, actual_result):
     return mse
 
 
-preds = rfr.predict(X_test)
-vals = math.sqrt(prediction_error(preds,y_test))
-print("{:e}".format(vals**2))
+preds = rs_rfr.predict(X_test)
+vals = prediction_error(preds,y_test)
+print(vals)
