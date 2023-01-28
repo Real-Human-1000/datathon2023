@@ -55,26 +55,25 @@ data2015, out2015 = reorganize_msn_metrics(msn2015, metrics2015)
 msn2016, metrics2016 = get_tables_for_year(2016)
 data2016, out2016 = reorganize_msn_metrics(msn2016, metrics2016)
 
-# print(msn2015)
-# print(msn2016)
-
 # plot_correlation(data2015)
 
 linear_regression = make_pipeline(StandardScaler(), LinearRegression())
 linear_regression.fit(msn2015, out2015)
 
-mse = mean_squared_error(out2015, linear_regression.predict(msn2016))
+mse = mean_squared_error(out2016, linear_regression.predict(msn2016))
 print("{:e}".format(mse))
 
 # linear_regression_coef = linear_regression[-1].coef_
-
 # print(list(linear_regression_coef))
 
 
 lasso_model = make_pipeline(StandardScaler(), Lasso(tol=0.01, max_iter=100000))
 lasso_model.fit(msn2015, out2015)
 
-print(lasso_model.predict(msn2015))
+# lasso_model_coef = lasso_model[-1].coef_
+# print(list(lasso_model_coef))
 
-mse = mean_squared_error(out2015, lasso_model.predict(msn2016))
+# print(lasso_model.predict(msn2015))
+
+mse = mean_squared_error(out2016, lasso_model.predict(msn2016))
 print("{:e}".format(mse))
