@@ -27,7 +27,11 @@ Metrics_df = states_df2[['StateCode', 'CO2 Emissions (Mmt)', 'TotalNumberofInves
 Metrics_df = Metrics_df.drop_duplicates(subset=None, keep="first" , inplace=False)
 Metrics_df.set_index('StateCode', inplace = True)
 final_states = pd.concat([MSN_df, Metrics_df], axis = "columns")
-print(final_states)
+#print(final_states)
 final_matrix = final_states.to_numpy()
-print(final_matrix)
+#print(final_matrix)
+
+#a = np.array([[1, 2], [3, 4]])
+#jig = np.transpose(a)
+#print(jig)
 #TEST
