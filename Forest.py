@@ -1,5 +1,6 @@
 import pandas as pd
 import numpy as np
+import math
 from sklearn.ensemble import RandomForestRegressor
 
 def get_tables_for_year(year):
@@ -76,4 +77,5 @@ def prediction_error(predictions, actual_result):
     return mse
 
 preds = rfr.predict(X_test)
-print(prediction_error(preds,y_test))
+vals = math.sqrt(prediction_error(preds,y_test))
+print(vals)
