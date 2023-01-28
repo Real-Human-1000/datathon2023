@@ -13,8 +13,12 @@ MSN_df = states_df2.pivot(index = "StateCode", columns = ("MSN"), values = "Amou
 Metrics_df = states_df2[['StateCode', 'CO2 Emissions (Mmt)', 'TotalNumberofInvestments', 'TotalAmountofAssistance']]
 Metrics_df = Metrics_df.drop_duplicates(subset=None, keep="first" , inplace=False)
 Metrics_df.set_index('StateCode', inplace = True)
-final_states = pd.concat([MSN_df, Metrics_df], axis = "columns")
-print(final_states)
+Final_df = pd.concat([MSN_df, Metrics_df], axis = "columns")
+print(Final_df)
+
+MSN_matrix = MSN_df.to_numpy()
+Metrics_matrix = Metrics_df.to_numpy()
+Final_matrix = Final_df.to_numpy()
 
 class LinearModel:
     """

@@ -13,6 +13,7 @@ print("Download ready.")
 """
 
 import pandas as pd
+import numpy as np
 df = pd.read_csv("Investment_Data_Train (1).csv")
 new_df = df[['MSN', 'StateCode', 'Year', 'Amount',
        'CO2 Emissions (Mmt)', 'TotalNumberofInvestments',
@@ -27,4 +28,6 @@ Metrics_df = Metrics_df.drop_duplicates(subset=None, keep="first" , inplace=Fals
 Metrics_df.set_index('StateCode', inplace = True)
 final_states = pd.concat([MSN_df, Metrics_df], axis = "columns")
 print(final_states)
+final_matrix = final_states.to_numpy()
+print(final_matrix)
 #TEST1
