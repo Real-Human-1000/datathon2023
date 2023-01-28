@@ -191,7 +191,7 @@ def fit_lasso(param, iterations, input_data, output_data):
 
         for curr_col in range(cols):
             matrix3 = matrix2[curr_col,:] @ lse
-            a_j = (matrix1[curr_col, 0] - matrix3[0, 0]) / matrix2[curr_col, curr_col]
+            a_j = (matrix1[curr_col, 0] - matrix3[0]) / matrix2[curr_col, curr_col]
             b_j = param / (2.0 * matrix2[curr_col, curr_col])
             lse[curr_col, 0] = soft_threshold(lse[curr_col, 0] + a_j, b_j)
 
