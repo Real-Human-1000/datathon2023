@@ -89,4 +89,4 @@ def prediction_error(predictions, actual_result):
 
 preds = rfr.predict(X_test)
 vals = prediction_error(preds,y_test)
-print(vals)
+print("{:e}".format(vals))
