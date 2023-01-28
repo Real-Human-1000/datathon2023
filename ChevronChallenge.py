@@ -4,6 +4,7 @@ import numpy.matrixlib as mat
 from numpy.linalg import inv
 from LinearModel import LinearModel
 
+
 def get_tables_for_year(year):
     df = pd.read_csv("Investment_Data_Train (1).csv")
     new_df = df[['MSN', 'StateCode', 'Year', 'Amount',
@@ -27,11 +28,7 @@ def get_tables_for_year(year):
 MSN_matrix, Metrics_matrix = get_tables_for_year(2015)
 MSN_matrix16, Metrics_matrix16 = get_tables_for_year(2016)
 
-MSN_matrix, Metrics_matrix = get_tables_for_year(2015)
 
-MSN_matrix16, Metrics_matrix16 = get_tables_for_year(2016)
-
-print(MSN_matrix)
 def fit_least_squares(input_data, output_data):
     """
     Create a Linear Model which predicts the output vector
