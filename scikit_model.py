@@ -63,10 +63,8 @@ def plot_correlation(df):
 
 
 msn2015, metrics2015 = get_tables_for_year(2015)
-data2015, out2015 = get_tables_for_year(2015)
 
 msn2016, metrics2016 = get_tables_for_year(2016)
-data2016, out2016 = get_tables_for_year(2016)
 
 # plot_correlation(data2015)
 
