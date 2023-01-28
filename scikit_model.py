@@ -8,17 +8,13 @@ from time import sleep
 
 from sklearn.pipeline import make_pipeline
 from sklearn.preprocessing import StandardScaler
-from sklearn.linear_model import (LinearRegression, LassoCV, RidgeCV)
+from sklearn.linear_model import (LinearRegression, MultiTaskLassoCV, RidgeCV)
 from sklearn.metrics import mean_squared_error
 
 # Referenced https://towardsdatascience.com/build-better-regression-models-with-lasso-271ce0f22bd
 
-# df = None
-
 
 def get_tables_for_year(year):
-    # global df
-    # if df is None:
     df = pd.read_csv("Investment_Data_Train (1).csv")
     new_df = df[['MSN', 'StateCode', 'Year', 'Amount',
                  'CO2 Emissions (Mmt)', 'TotalNumberofInvestments',
@@ -46,14 +42,28 @@ def plot_correlation(df):
     plt.show()
 
 
-msn2015, _ = get_tables_for_year(2015)
-# msn2016, _ = get_tables_for_year(2016)
+msn2015, metrics2015 = get_tables_for_year(2015)
+msn2016, metrics2016 = get_tables_for_year(2016)
 
-print(msn2015)
+# print(msn2015)
 # print(msn2016)
 
-plot_correlation(msn2015)
+# plot_correlation(msn2015)
 
-# pandas df.corr()
+linear_regression = make_pipeline(StandardScaler(), LinearRegression())
+linear_regression.fit(msn2015, metrics2015)
 
-# linear_regression = make_pipeline(StandardScaler(), LinearRegression())
+mse = mean_squared_error(metrics2016, linear_regression.predict(msn2016))
+print(mse)
+
+# linear_regression_coef = linear_regression[-1].coef_
+
+# print(list(linear_regression_coef))
+
+
+lasso_cv = make_pipeline(StandardScaler(), MultiTaskLassoCV())
+lasso_cv.fit(msn2015, metrics2015)
+
+mse = mean_squared_error(metrics2016, lasso_cv.predict(msn2016))
+print(mse)
+
