@@ -4,7 +4,6 @@ import numpy.matrixlib as mat
 from numpy.linalg import inv
 from LinearModel import LinearModel
 
-
 def get_tables_for_year(year):
     df = pd.read_csv("Investment_Data_Train (1).csv")
     new_df = df[['MSN', 'StateCode', 'Year', 'Amount',
@@ -24,12 +23,14 @@ def get_tables_for_year(year):
     return MSN_df.to_numpy(), Metrics_df.TotalAmountofAssistance.to_numpy()
 
 
-MSN_matrix, Metrics_matrix = get_tables_for_year(2015)
-MSN_matrix16, Metrics_matrix16 = get_tables_for_year(2016)
+
+MSN_matrix, _ = get_tables_for_year(2015)
+_, Metrics_matrix = get_tables_for_year(2016)
+
+MSN_matrix16, _ = get_tables_for_year(2015)
+_, Metrics_matrix16 = get_tables_for_year(2016)
 
 print(np.shape(Metrics_matrix16))
-
-
 def fit_least_squares(input_data, output_data):
     """
     Create a Linear Model which predicts the output vector
@@ -159,6 +160,5 @@ def run_experiment(iterations):
     print("LASSO model | λ of 100000 | testing: ", lassomodel3.prediction_error(MSN_matrix16, Metrics_matrix16))
 
     print("LASSO model | λ of 1000 | testing: ", lassomodel.prediction_error(MSN_matrix, Metrics_matrix))
-    print(lassomodel.generate_predictions(MSN_matrix))
 
 run_experiment(10000)
