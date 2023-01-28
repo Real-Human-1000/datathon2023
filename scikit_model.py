@@ -79,7 +79,7 @@ ridge_all_model.fit(all_MSN, all_metrics)
 elasticnet_all_model = make_pipeline(StandardScaler(), ElasticNetCV())
 elasticnet_all_model.fit(all_MSN, all_metrics)
 
-
+# Weights
 lasso_model_coef = lasso_all_model[-1].coef_
 print(list(zip(list(msn2015.columns), list(lasso_model_coef))))
 
