@@ -19,9 +19,19 @@ def get_tables_for_year(year):
     Metrics_df.set_index('StateCode', inplace=True)
 
     return MSN_df, Metrics_df.TotalAmountofAssistance
+MSN_frames = []
+metrics_frames = []
+for year in range(2015, 2019):
+    MSN_frames.append(get_tables_for_year(year)[0])
+    metrics_frames.append(get_tables_for_year(year)[1])
+#creates MSN matrix for years from 2015-2018
+MSN_matrix, Metrics_matrix = get_tables_for_year(2015)
+MSN_matrix16, Metrics_matrix16 = get_tables_for_year(2016)
+all_MSN = pd.concat(MSN_frames)
+all_metrics = pd.concat(metrics_frames)
+
 
 msn2015, metrics2015 = get_tables_for_year(2015)
-
 msn2016, metrics2016 = get_tables_for_year(2016)
 
 np.random.seed(42)
