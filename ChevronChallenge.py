@@ -1,5 +1,7 @@
 import pandas as pd
 import numpy as np
+import numpy.matrixlib as mat
+from numpy.linalg import inv
 
 df = pd.read_csv("Investment_Data_Train (1).csv")
 new_df = df[['MSN', 'StateCode', 'Year', 'Amount',
@@ -14,7 +16,7 @@ Metrics_df = states_df2[['StateCode', 'CO2 Emissions (Mmt)', 'TotalNumberofInves
 Metrics_df = Metrics_df.drop_duplicates(subset=None, keep="first" , inplace=False)
 Metrics_df.set_index('StateCode', inplace = True)
 Final_df = pd.concat([MSN_df, Metrics_df], axis = "columns")
-print(Final_df)
+#print(Final_df)
 
 MSN_matrix = MSN_df.to_numpy()
 Metrics_matrix = Metrics_df.to_numpy()
@@ -28,7 +30,7 @@ Metrics_df16 = Metrics_df16.drop_duplicates(subset=None, keep="first" , inplace=
 Metrics_df16.set_index('StateCode', inplace = True)
 Final_df16 = pd.concat([MSN_df16, Metrics_df16], axis = "columns")
 
-print(Final_df16)
+#print(Final_df16)
 
 MSN_matrix16 = MSN_df16.to_numpy()
 Metrics_matrix16 = Metrics_df16.to_numpy()
@@ -128,9 +130,9 @@ def fit_least_squares(input_data, output_data):
     # solve for the weights
     input_transpose = np.transpose(input_data)
     input_mul = input_transpose @ input_data
-    print(input_mul)
-    print(np.shape(input_mul))
-    input_inverse = np.linalg.inv(input_mul)
+    deter = np.linalg.det(input_mul)
+    print(deter)
+    input_inverse = np.linalg.lstsq(input_mul)
     weights = np.multiply(np.multiply(input_inverse, input_transpose) @ output_data)
 
     return LinearModel(weights)
