@@ -108,34 +108,34 @@ ridge_all_model.fit(all_MSN, all_metrics)
 
 # Get MSE (Individual Years)
 #2015
-mse15 = mean_squared_error(metrics2020, linear_regression15.predict(msn2020),squared=False)
-msel15 = mean_squared_error(metrics2020, lasso_model15.predict(msn2020),squared=False)
-mser15 = mean_squared_error(metrics2020, ridge_model15.predict(msn2020),squared=False)
+mse15 = mean_squared_error(metrics2020, abs(linear_regression15.predict(msn2020)),squared=False)
+msel15 = mean_squared_error(metrics2020, abs(lasso_model15.predict(msn2020)),squared=False)
+mser15 = mean_squared_error(metrics2020, abs(ridge_model15.predict(msn2020)),squared=False)
 
 #2016
-mse16 = mean_squared_error(metrics2020, linear_regression16.predict(msn2020),squared=False)
-msel16 = mean_squared_error(metrics2020, lasso_model16.predict(msn2020),squared=False)
-mser16 = mean_squared_error(metrics2020, ridge_model16.predict(msn2020),squared=False)
+mse16 = mean_squared_error(metrics2020, abs(linear_regression16.predict(msn2020)),squared=False)
+msel16 = mean_squared_error(metrics2020, abs(lasso_model16.predict(msn2020)),squared=False)
+mser16 = mean_squared_error(metrics2020, abs(ridge_model16.predict(msn2020)),squared=False)
 
 #2017
-mse17 = mean_squared_error(metrics2020, linear_regression17.predict(msn2020),squared=False)
-msel17 = mean_squared_error(metrics2020, lasso_model17.predict(msn2020),squared=False)
-mser17 = mean_squared_error(metrics2020, ridge_model17.predict(msn2020),squared=False)
+mse17 = mean_squared_error(metrics2020, abs(linear_regression17.predict(msn2020)),squared=False)
+msel17 = mean_squared_error(metrics2020, abs(lasso_model17.predict(msn2020)),squared=False)
+mser17 = mean_squared_error(metrics2020, abs(ridge_model17.predict(msn2020)),squared=False)
 
 #2018
-mse18 = mean_squared_error(metrics2020, linear_regression18.predict(msn2020),squared=False)
-msel18 = mean_squared_error(metrics2020, lasso_model18.predict(msn2020),squared=False)
-mser18 = mean_squared_error(metrics2020, ridge_model18.predict(msn2020),squared=False)
+mse18 = mean_squared_error(metrics2020, abs(linear_regression18.predict(msn2020)),squared=False)
+msel18 = mean_squared_error(metrics2020, abs(lasso_model18.predict(msn2020)),squared=False)
+mser18 = mean_squared_error(metrics2020, abs(ridge_model18.predict(msn2020)),squared=False)
 
 #2019
-mse19 = mean_squared_error(metrics2020, linear_regression19.predict(msn2020),squared=False)
-msel19 = mean_squared_error(metrics2020, lasso_model19.predict(msn2020),squared=False)
-mser19 = mean_squared_error(metrics2020, ridge_model19.predict(msn2020),squared=False)
+mse19 = mean_squared_error(metrics2020, abs(linear_regression19.predict(msn2020)),squared=False)
+msel19 = mean_squared_error(metrics2020, abs(lasso_model19.predict(msn2020)),squared=False)
+mser19 = mean_squared_error(metrics2020, abs(ridge_model19.predict(msn2020)),squared=False)
 
 # Get MSE (All Years)
-msea = mean_squared_error(metrics2020, linear_regression_all.predict(msn2020),squared=False)
-msela = mean_squared_error(metrics2020, lasso_all_model.predict(msn2020),squared=False)
-msera = mean_squared_error(metrics2020, ridge_all_model.predict(msn2020),squared=False)
+msea = mean_squared_error(metrics2020, abs(linear_regression_all.predict(msn2020)),squared=False)
+msela = mean_squared_error(metrics2020, abs(lasso_all_model.predict(msn2020)),squared=False)
+msera = mean_squared_error(metrics2020, abs(ridge_all_model.predict(msn2020)),squared=False)
 
 # Print out results
 print("MSEs")
@@ -177,9 +177,12 @@ print(list(zip(all_MSN.columns, linear_regression_coef)))
 
 def weights_graph(model):
     model_coef = model[-1].coef_
-    print(model_coef)
     plt.figure(figsize=(16,10))
     plt.bar(msn2015.columns, model_coef, color='maroon', width=0.4)
+    plt.xticks(fontsize=5, rotation=-45)
+    plt.title("Weight of Each Factor")
+    plt.ylabel("Weights")
+    plt.xlabel("Factors")
     plt.yscale("linear")
     plt.show()
 
@@ -201,3 +204,11 @@ plt.title("RMSE for Each Model")
 plt.ylabel("RMSE")
 plt.yscale("log")
 plt.show()
+
+
+weights_graph(lasso_all_model)
+weights_graph(ridge_all_model)
+weights_graph(linear_regression_all)
+
+print("-----PREDICTIONS-----")
+print(abs(lasso_all_model.predict(msn2020)))
