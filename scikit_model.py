@@ -183,7 +183,7 @@ def weights_graph(model):
     plt.yscale("linear")
     plt.show()
 
-plt.figure(figsize=(20,50))
+plt.figure(figsize=(16,10))
 plt.bar(["Regression 15","LASSO 15","Ridge 15",
          "Regression 16","LASSO 16","Ridge 16",
          "Regression 17","LASSO 17","Ridge 17",
