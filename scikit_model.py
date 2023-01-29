@@ -183,6 +183,7 @@ def weights_graph(model):
     plt.yscale("linear")
     plt.show()
 
+plt.figure(figsize=(20,50))
 plt.bar(["Regression 15","LASSO 15","Ridge 15",
          "Regression 16","LASSO 16","Ridge 16",
          "Regression 17","LASSO 17","Ridge 17",
@@ -196,5 +197,6 @@ plt.bar(["Regression 15","LASSO 15","Ridge 15",
                                                      msea,msela,msera], color='maroon', width=0.4)
 plt.ylim(8*10**14,3*10**15)
 plt.xticks(fontsize=10, rotation = -90)
+
 plt.yscale("log")
 plt.show()
