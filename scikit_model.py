@@ -108,34 +108,34 @@ ridge_all_model.fit(all_MSN, all_metrics)
 
 # Get MSE (Individual Years)
 #2015
-mse15 = mean_squared_error(metrics2020, linear_regression15.predict(msn2020))
-msel15 = mean_squared_error(metrics2020, lasso_model15.predict(msn2020))
-mser15 = mean_squared_error(metrics2020, ridge_model15.predict(msn2020))
+mse15 = mean_squared_error(metrics2020, linear_regression15.predict(msn2020),squared=False)
+msel15 = mean_squared_error(metrics2020, lasso_model15.predict(msn2020),squared=False)
+mser15 = mean_squared_error(metrics2020, ridge_model15.predict(msn2020),squared=False)
 
 #2016
-mse16 = mean_squared_error(metrics2020, linear_regression16.predict(msn2020))
-msel16 = mean_squared_error(metrics2020, lasso_model16.predict(msn2020))
-mser16 = mean_squared_error(metrics2020, ridge_model16.predict(msn2020))
+mse16 = mean_squared_error(metrics2020, linear_regression16.predict(msn2020),squared=False)
+msel16 = mean_squared_error(metrics2020, lasso_model16.predict(msn2020),squared=False)
+mser16 = mean_squared_error(metrics2020, ridge_model16.predict(msn2020),squared=False)
 
 #2017
-mse17 = mean_squared_error(metrics2020, linear_regression17.predict(msn2020))
-msel17 = mean_squared_error(metrics2020, lasso_model17.predict(msn2020))
-mser17 = mean_squared_error(metrics2020, ridge_model17.predict(msn2020))
+mse17 = mean_squared_error(metrics2020, linear_regression17.predict(msn2020),squared=False)
+msel17 = mean_squared_error(metrics2020, lasso_model17.predict(msn2020),squared=False)
+mser17 = mean_squared_error(metrics2020, ridge_model17.predict(msn2020),squared=False)
 
 #2018
-mse18 = mean_squared_error(metrics2020, linear_regression18.predict(msn2020))
-msel18 = mean_squared_error(metrics2020, lasso_model18.predict(msn2020))
-mser18 = mean_squared_error(metrics2020, ridge_model18.predict(msn2020))
+mse18 = mean_squared_error(metrics2020, linear_regression18.predict(msn2020),squared=False)
+msel18 = mean_squared_error(metrics2020, lasso_model18.predict(msn2020),squared=False)
+mser18 = mean_squared_error(metrics2020, ridge_model18.predict(msn2020),squared=False)
 
 #2019
-mse19 = mean_squared_error(metrics2020, linear_regression19.predict(msn2020))
-msel19 = mean_squared_error(metrics2020, lasso_model19.predict(msn2020))
-mser19 = mean_squared_error(metrics2020, ridge_model19.predict(msn2020))
+mse19 = mean_squared_error(metrics2020, linear_regression19.predict(msn2020),squared=False)
+msel19 = mean_squared_error(metrics2020, lasso_model19.predict(msn2020),squared=False)
+mser19 = mean_squared_error(metrics2020, ridge_model19.predict(msn2020),squared=False)
 
 # Get MSE (All Years)
-msea = mean_squared_error(metrics2020, linear_regression_all.predict(msn2020))
-msela = mean_squared_error(metrics2020, lasso_all_model.predict(msn2020))
-msera = mean_squared_error(metrics2020, ridge_all_model.predict(msn2020))
+msea = mean_squared_error(metrics2020, linear_regression_all.predict(msn2020),squared=False)
+msela = mean_squared_error(metrics2020, lasso_all_model.predict(msn2020),squared=False)
+msera = mean_squared_error(metrics2020, ridge_all_model.predict(msn2020),squared=False)
 
 # Print out results
 print("MSEs")
@@ -195,8 +195,9 @@ plt.bar(["Regression 15","LASSO 15","Ridge 15",
                                                      mse18,msel18,mser18,
                                                      mse19,msel19,mser19,
                                                      msea,msela,msera], color='maroon', width=0.4)
-plt.ylim(8*10**14,3*10**15)
-plt.xticks(fontsize=10, rotation = -90)
-
+plt.ylim(2.5*10**7,6*10**7)
+plt.xticks(fontsize=5, rotation = -45)
+plt.title("RMSE for Each Model")
+plt.ylabel("RMSE")
 plt.yscale("log")
 plt.show()
