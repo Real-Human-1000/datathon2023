@@ -182,3 +182,19 @@ def weights_graph(model):
     plt.bar(msn2015.columns, model_coef, color='maroon', width=0.4)
     plt.yscale("linear")
     plt.show()
+
+plt.bar(["Regression 15","LASSO 15","Ridge 15",
+         "Regression 16","LASSO 16","Ridge 16",
+         "Regression 17","LASSO 17","Ridge 17",
+         "Regression 18","LASSO 18","Ridge 18",
+         "Regression 19","LASSO 19","Ridge 19",
+         "Regression All","LASSO All","Ridge All"], [mse15,msel15,mser15,
+                                                     mse16,msel16,mser16,
+                                                     mse17,msel17,mser17,
+                                                     mse18,msel18,mser18,
+                                                     mse19,msel19,mser19,
+                                                     msea,msela,msera], color='maroon', width=0.4)
+plt.ylim(8*10**14,3*10**15)
+plt.xticks(fontsize=10, rotation = -90)
+plt.yscale("log")
+plt.show()
