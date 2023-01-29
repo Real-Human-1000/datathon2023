@@ -2,11 +2,10 @@
 import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
-import numpy as np
 
 from sklearn.pipeline import make_pipeline
 from sklearn.preprocessing import StandardScaler
-from sklearn.linear_model import (LinearRegression, LassoCV, RidgeCV, ElasticNetCV)
+from sklearn.linear_model import (LinearRegression, LassoCV, RidgeCV)
 from sklearn.metrics import mean_squared_error
 
 # Referenced https://towardsdatascience.com/build-better-regression-models-with-lasso-271ce0f22bd
